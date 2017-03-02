@@ -1,0 +1,27 @@
+{
+  "name": "gm314/common",
+  "description": "common",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Gregor Müller"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "require-dev": {
+    "codeception/codeception": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "Common\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CommonTest\\": "tests"
+    }
+  }
+}
