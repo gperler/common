@@ -16,12 +16,12 @@
   },
   "autoload": {
     "psr-0": {
-      "Common\\": "src"
+      "Civis\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "CommonTest\\": "tests"
+      "CivisTest\\": "tests"
     }
   }
 }

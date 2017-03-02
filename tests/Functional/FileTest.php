@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace CommonTest\Functional;
 
-use Common\File;
+use Civis\Common\File;
 
 class ClassReaderTest extends \PHPUnit_Framework_TestCase
 {
