@@ -7,6 +7,12 @@ namespace Common;
 class File
 {
 
+    const EXCEPTION_FILE_DOES_NOT_EXIST = "File '%s' does not exist";
+
+    const EXCEPTION_INVALID_XML = "File '%s' does not contain valid XML %s";
+
+    const EXCEPTION_INVALID_JSON = "File '%s' does not contain valid JSON";
+
     /**
      * absolute path to file
      * @var string
@@ -42,7 +48,7 @@ class File
      */
     public function getExtension()
     {
-        return StringUtil::getEndAfterLast($this->absoluteFileName, ".");
+        return StringUtil::getEndAfterLast($this->getFileName(), ".");
     }
 
     /**
@@ -240,18 +246,27 @@ class File
         if ($result) {
             return $xml;
         }
-        $e = new \Exception(libxml_get_errors());
+        $messageObject = ArrayUtil::getFromArray(libxml_get_errors(), 0);
+        $libXMLMessage = ObjectUtil::getFromObject($messageObject, "message");
+        $message = sprintf(self::EXCEPTION_INVALID_XML, $this->absoluteFileName, $libXMLMessage);
+        $e = new \Exception(libxml_get_errors()[0]->message);
         libxml_clear_errors();
         throw $e;
     }
 
     /**
      * @return array
+     * @throws \Exception
      */
-    public function loadAsJSONArray()
+    public function loadAsJSONArray() : array
     {
         $this->checkFileExists();
-        return json_decode($this->getContents(), true);
+        $array = json_decode($this->getContents(), true);
+        if ($array === null || !is_array($array)) {
+            $message = sprintf(self::EXCEPTION_INVALID_JSON, $this->absoluteFileName);
+            throw new \Exception($message);
+        }
+        return $array;
     }
 
     /**
@@ -294,7 +309,8 @@ class File
         if ($this->exists()) {
             return;
         }
-        throw new \Exception("File '" . $this->absoluteFileName . "' does not exist.");
+        $message = sprintf(self::EXCEPTION_FILE_DOES_NOT_EXIST, $this->absoluteFileName);
+        throw new \Exception($message);
     }
 
     /**
