@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace CommonTest\Functional;
 
@@ -21,4 +21,21 @@ class ArrayUtilTest extends \PHPUnit_Framework_TestCase
         ], "key"));
     }
 
+
+    public function testPath()
+    {
+        $testArray = [
+            "test" => [
+                7,
+                [
+                    "path2" => "result"
+                ]
+            ]
+        ];
+
+        $result = ArrayUtil::getPathFromArray($testArray, "test.1.path2");
+
+        $this->assertSame("result", $result);
+
+    }
 }
