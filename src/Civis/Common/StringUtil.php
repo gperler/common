@@ -63,8 +63,8 @@ class StringUtil
      */
     public static function getEndAfterLast(string $haystack, string $needle) : string
     {
-        $lastOccurence = strrchr($haystack, $needle);
-        if ($lastOccurence === false) {
+        $lastOccurrence = strrchr($haystack, $needle);
+        if ($lastOccurrence === false) {
             return $haystack;
         }
         return ltrim(strrchr($haystack, $needle), $needle);
