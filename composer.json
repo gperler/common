@@ -9,7 +9,11 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.0.0",
+    "ext-json" : "*",
+    "ext-libxml" : "*",
+    "ext-dom": "*",
+    "ext-xsl": "*"
   },
   "require-dev": {
     "codeception/codeception": "*"

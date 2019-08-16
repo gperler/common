@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Civis\Common;
 
@@ -15,9 +15,11 @@ class File
 
     /**
      * absolute path to file
+     *
      * @var string
      */
     protected $absoluteFileName;
+
 
     /**
      * @param string $absoluteFileName
@@ -27,6 +29,7 @@ class File
         $this->absoluteFileName = rtrim($absoluteFileName, '/');
     }
 
+
     /**
      * @return string
      */
@@ -34,6 +37,7 @@ class File
     {
         return $this->absoluteFileName;
     }
+
 
     /**
      * @return string
@@ -43,6 +47,7 @@ class File
         return basename($this->absoluteFileName);
     }
 
+
     /**
      * @return string
      */
@@ -50,6 +55,7 @@ class File
     {
         return StringUtil::getEndAfterLast($this->getFileName(), ".");
     }
+
 
     /**
      * @param string $extension
@@ -61,6 +67,7 @@ class File
         return StringUtil::endsWith($this->absoluteFileName, $extension);
     }
 
+
     /**
      * @return string
      */
@@ -69,8 +76,10 @@ class File
         return dirname($this->absoluteFileName);
     }
 
+
     /**
      * tells if the file is a file
+     *
      * @return bool
      */
     public function isFile()
@@ -78,8 +87,10 @@ class File
         return is_file($this->absoluteFileName);
     }
 
+
     /**
      * tells if the file is a directory
+     *
      * @return bool
      */
     public function isDir()
@@ -87,8 +98,10 @@ class File
         return is_dir($this->absoluteFileName);
     }
 
+
     /**
      * tries to delete a file
+     *
      * @return bool
      */
     public function delete()
@@ -102,6 +115,7 @@ class File
 
         return unlink($this->absoluteFileName);
     }
+
 
     /**
      *
@@ -122,14 +136,17 @@ class File
         }
     }
 
+
     /**
      * tells if the file exists
+     *
      * @return bool
      */
     public function exists()
     {
         return file_exists($this->absoluteFileName);
     }
+
 
     /**
      * creates needed directories recursively
@@ -143,8 +160,10 @@ class File
         return is_dir($this->absoluteFileName) || mkdir($this->absoluteFileName, $mode, true);
     }
 
+
     /**
      * scans a directory and returns a list of Files
+     *
      * @return File[]
      */
     public function scanDir()
@@ -167,6 +186,7 @@ class File
 
         return $fileList;
     }
+
 
     /**
      * Finds the first occurence of the given filename
@@ -196,12 +216,13 @@ class File
         return null;
     }
 
+
     /**
      * @param string $extension
      *
      * @return File[]
      */
-    public function findFileList(string $extension) : array
+    public function findFileList(string $extension): array
     {
         if (!$this->isDir() || !$this->exists()) {
             return [];
@@ -220,9 +241,10 @@ class File
         return $result;
     }
 
+
     /**
-     * loads the file as XSLT Processor
      * @return \XSLTProcessor
+     * @throws FileException
      */
     public function loadAsXSLTProcessor()
     {
@@ -232,10 +254,10 @@ class File
         return $xsl;
     }
 
+
     /**
-     * loads the file as XML DOMDocument
      * @return \DomDocument
-     * @throws \Exception
+     * @throws FileException
      */
     public function loadAsXML()
     {
@@ -249,28 +271,31 @@ class File
         $messageObject = ArrayUtil::getFromArray(libxml_get_errors(), 0);
         $libXMLMessage = ObjectUtil::getFromObject($messageObject, "message");
         $message = sprintf(self::EXCEPTION_INVALID_XML, $this->absoluteFileName, $libXMLMessage);
-        $e = new \Exception(libxml_get_errors()[0]->message);
+        $e = new FileException(libxml_get_errors()[0]->message);
         libxml_clear_errors();
         throw $e;
     }
 
+
     /**
      * @return array
-     * @throws \Exception
+     * @throws FileException
      */
-    public function loadAsJSONArray() : array
+    public function loadAsJSONArray(): array
     {
         $this->checkFileExists();
         $array = json_decode($this->getContents(), true);
         if ($array === null || !is_array($array)) {
             $message = sprintf(self::EXCEPTION_INVALID_JSON, $this->absoluteFileName);
-            throw new \Exception($message);
+            throw new FileException($message);
         }
         return $array;
     }
 
+
     /**
-     * @return object
+     * @return mixed
+     * @throws FileException
      */
     public function loadAsJSONObject()
     {
@@ -278,14 +303,17 @@ class File
         return json_decode($this->getContents());
     }
 
+
     /**
-     * @return string
+     * @return false|string
+     * @throws FileException
      */
     public function getContents()
     {
         $this->checkFileExists();
         return file_get_contents($this->absoluteFileName);
     }
+
 
     /**
      * @param string $data
@@ -301,8 +329,9 @@ class File
         file_put_contents($this->absoluteFileName, $data);
     }
 
+
     /**
-     * @throws \Exception
+     * @throws FileException
      */
     protected function checkFileExists()
     {
@@ -310,11 +339,13 @@ class File
             return;
         }
         $message = sprintf(self::EXCEPTION_FILE_DOES_NOT_EXIST, $this->absoluteFileName);
-        throw new \Exception($message);
+        throw new FileException($message);
     }
+
 
     /**
      * The __toString method allows a class to decide how it will react when it is converted to a string.
+     *
      * @return string
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
      */
